@@ -9,3 +9,21 @@
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
 }
+
+@layer base {
+    body {
+        background:
+            radial-gradient(circle at top left, rgba(16, 185, 129, 0.12), transparent 28%),
+            radial-gradient(circle at bottom right, rgba(14, 165, 233, 0.12), transparent 24%),
+            #f8fafc;
+    }
+}
+
+@layer base {
+    body {
+        background:
+            radial-gradient(circle at top left, rgba(16, 185, 129, 0.12), transparent 28%),
+            radial-gradient(circle at bottom right, rgba(14, 165, 233, 0.12), transparent 24%),
+            #f8fafc;
+    }
+}
