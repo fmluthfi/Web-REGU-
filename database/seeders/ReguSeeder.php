@@ -50,11 +50,11 @@ class ReguSeeder extends Seeder
         $kelasX2->gurus()->syncWithoutDetaching($gurus->pluck('id')->slice(1)->all());
 
         $students = collect([
-            ['nis' => '1001', 'name' => 'Siswa Satu', 'kelas_id' => $kelasX1->id],
-            ['nis' => '1002', 'name' => 'Siswa Dua', 'kelas_id' => $kelasX1->id],
-            ['nis' => '1003', 'name' => 'Siswa Tiga', 'kelas_id' => $kelasX1->id],
-            ['nis' => '1004', 'name' => 'Siswa Empat', 'kelas_id' => $kelasX2->id],
-            ['nis' => '1005', 'name' => 'Siswa Lima', 'kelas_id' => $kelasX2->id],
+            ['nis' => '1001', 'name' => 'Vicky', 'kelas_id' => $kelasX1->id],
+            ['nis' => '1002', 'name' => 'Luthfi', 'kelas_id' => $kelasX1->id],
+            ['nis' => '1003', 'name' => 'Ali', 'kelas_id' => $kelasX1->id],
+            ['nis' => '1004', 'name' => 'Mahdi', 'kelas_id' => $kelasX2->id],
+            ['nis' => '1005', 'name' => 'Muhtiar', 'kelas_id' => $kelasX2->id],
         ])->map(function (array $student) {
             $user = User::updateOrCreate(
                 ['nis' => $student['nis']],
