@@ -11,20 +11,24 @@
     <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon-16x16.png') }}">
     <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}">
     <link rel="manifest" href="{{ asset('site.webmanifest') }}">
-    @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
-    @else
+    @php
+        $hasViteAssets = file_exists(public_path('build/manifest.json')) || (app()->environment('local') && file_exists(public_path('hot')));
+    @endphp
+    @if (app()->environment('production') || ! $hasViteAssets)
         <script src="https://cdn.tailwindcss.com"></script>
-        <style>
-            body {
-                background:
-                    radial-gradient(circle at top left, rgba(16, 185, 129, 0.12), transparent 28%),
-                    radial-gradient(circle at bottom right, rgba(14, 165, 233, 0.12), transparent 24%),
-                    #f8fafc;
-                color: #0f172a;
-            }
-        </style>
     @endif
+    @if ($hasViteAssets)
+        @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @endif
+    <style>
+        body {
+            background:
+                radial-gradient(circle at top left, rgba(16, 185, 129, 0.12), transparent 28%),
+                radial-gradient(circle at bottom right, rgba(14, 165, 233, 0.12), transparent 24%),
+                #f8fafc;
+            color: #0f172a;
+        }
+    </style>
 </head>
 <body class="min-h-screen bg-slate-100 text-slate-900">
     <div class="min-h-screen">
