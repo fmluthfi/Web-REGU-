@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BkDashboardController;
 use App\Http\Controllers\EvaluasiController;
@@ -19,6 +20,9 @@ Route::middleware('guest')->group(function (): void {
     Route::get('/login', [AuthController::class, 'create'])->name('login');
     Route::post('/login', [AuthController::class, 'store'])->middleware('throttle:login')->name('login.store');
 });
+
+Route::get('/admin/login', [AuthController::class, 'createAdmin'])->name('admin.login');
+Route::post('/admin/login', [AuthController::class, 'storeAdmin'])->middleware('throttle:login')->name('admin.login.store');
 
 Route::middleware('auth')->group(function (): void {
     Route::post('/logout', [AuthController::class, 'destroy'])->name('logout');
@@ -48,4 +52,10 @@ Route::middleware(['auth', 'role:kepala_sekolah'])->prefix('kepala-sekolah')->as
     Route::post('/periode', [PeriodeEvaluasiController::class, 'store'])->name('periode.store');
     Route::post('/periode/{periode}/aktifkan', [PeriodeEvaluasiController::class, 'activate'])->name('periode.activate');
     Route::post('/periode/{periode}/selesaikan', [PeriodeEvaluasiController::class, 'complete'])->name('periode.complete');
+});
+
+Route::middleware(['auth', 'role:admin'])->prefix('admin')->as('admin.')->group(function (): void {
+    Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
+    Route::post('/siswa', [AdminDashboardController::class, 'storeSiswa'])->name('siswa.store');
+    Route::post('/guru', [AdminDashboardController::class, 'storeGuru'])->name('guru.store');
 });

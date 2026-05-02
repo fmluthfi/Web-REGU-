@@ -28,12 +28,17 @@
 </head>
 <body class="min-h-screen bg-slate-100 text-slate-900">
     <div class="min-h-screen">
-        @unless (request()->routeIs('login'))
+        @unless (request()->routeIs('login', 'admin.login'))
             <nav class="border-b border-slate-200 bg-white/95 backdrop-blur">
                 <div class="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
-                    <div>
-                        <a href="{{ route('dashboard.redirect') }}" class="text-xl font-semibold tracking-tight text-slate-900">REGU</a>
-                        <p class="text-sm text-slate-500">Platform Rating Guru Berbasis Evaluasi Siswa</p>
+                    <div class="flex items-center gap-3">
+                        <a href="{{ route('dashboard.redirect') }}" class="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-full bg-white">
+                            <img src="{{ asset('images/REGU.png') }}" alt="Logo REGU" class="h-full w-full object-contain">
+                        </a>
+                        <div>
+                            <a href="{{ route('dashboard.redirect') }}" class="text-xl font-semibold tracking-tight text-slate-900">REGU</a>
+                            <p class="text-sm text-slate-500">Platform Rating Guru Berbasis Evaluasi Siswa</p>
+                        </div>
                     </div>
                     @auth
                     <div class="flex items-center gap-4">
@@ -61,19 +66,21 @@
                     @elseif (auth()->user()->role === 'kepala_sekolah')
                         <a href="{{ route('kepala-sekolah.dashboard') }}" class="rounded-full px-3 py-2 {{ request()->routeIs('kepala-sekolah.dashboard') ? 'bg-sky-600 text-white' : 'bg-white text-slate-700' }}">Dashboard Laporan</a>
                         <a href="{{ route('kepala-sekolah.periode.index') }}" class="rounded-full px-3 py-2 {{ request()->routeIs('kepala-sekolah.periode.*') ? 'bg-sky-600 text-white' : 'bg-white text-slate-700' }}">Periode Evaluasi</a>
+                    @elseif (auth()->user()->role === 'admin')
+                        <a href="{{ route('admin.dashboard') }}" class="rounded-full px-3 py-2 {{ request()->routeIs('admin.*') ? 'bg-slate-900 text-white' : 'bg-white text-slate-700' }}">Dashboard Admin</a>
                     @endif
                 </div>
             </header>
         @endauth
 
-        <main class="{{ request()->routeIs('login') ? '' : 'mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8' }}">
+        <main class="{{ request()->routeIs('login', 'admin.login') ? '' : 'mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8' }}">
             @if (session('success'))
                 <div class="mb-6 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">{{ session('success') }}</div>
             @endif
             @if (session('error'))
                 <div class="mb-6 rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">{{ session('error') }}</div>
             @endif
-            @if (! request()->routeIs('login') && $errors->any())
+            @if (! request()->routeIs('login', 'admin.login') && $errors->any())
                 <div class="mb-6 rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
                     <ul class="space-y-1">
                         @foreach ($errors->all() as $error)

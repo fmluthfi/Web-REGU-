@@ -22,7 +22,7 @@ class LoginRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'login.required' => 'NIS atau NIP wajib diisi.',
+            'login.required' => 'Identitas login wajib diisi.',
             'password.required' => 'Password wajib diisi.',
         ];
     }

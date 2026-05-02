@@ -18,6 +18,21 @@ class AuthController extends Controller
         return view('auth.login');
     }
 
+    public function createAdmin(): RedirectResponse|View
+    {
+        if (auth()->user()?->role === 'admin') {
+            return redirect()->route('admin.dashboard');
+        }
+
+        if (auth()->check()) {
+            Auth::logout();
+            request()->session()->invalidate();
+            request()->session()->regenerateToken();
+        }
+
+        return view('auth.admin-login');
+    }
+
     public function store(LoginRequest $request): RedirectResponse
     {
         $credentials = $request->validated();
@@ -36,7 +51,7 @@ class AuthController extends Controller
             ->orWhere('name', $login)
             ->first();
 
-        if (! $user || ! Hash::check($credentials['password'], $user->password)) {
+        if (! $user || $user->role === 'admin' || ! Hash::check($credentials['password'], $user->password)) {
             RateLimiter::hit($throttleKey, 60);
 
             return back()
@@ -51,13 +66,47 @@ class AuthController extends Controller
         return redirect()->intended($this->redirectPath($user->role));
     }
 
+    public function storeAdmin(LoginRequest $request): RedirectResponse
+    {
+        $credentials = $request->validated();
+        $login = trim($credentials['login']);
+        $throttleKey = 'admin|'.mb_strtolower($login).'|'.$request->ip();
+
+        if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            throw ValidationException::withMessages([
+                'login' => 'Terlalu banyak percobaan login gagal. Coba lagi beberapa saat.',
+            ]);
+        }
+
+        $user = User::query()
+            ->where('email', $login)
+            ->orWhere('name', $login)
+            ->first();
+
+        if (! $user || $user->role !== 'admin' || ! Hash::check($credentials['password'], $user->password)) {
+            RateLimiter::hit($throttleKey, 60);
+
+            return back()
+                ->withErrors(['login' => 'Akun admin tidak ditemukan atau password salah.'])
+                ->onlyInput('login');
+        }
+
+        RateLimiter::clear($throttleKey);
+        Auth::login($user, false);
+        $request->session()->regenerate();
+
+        return redirect()->intended($this->redirectPath($user->role));
+    }
+
     public function destroy(): RedirectResponse
     {
+        $role = auth()->user()?->role;
+
         Auth::logout();
         request()->session()->invalidate();
         request()->session()->regenerateToken();
 
-        return redirect()->route('login');
+        return redirect()->route($role === 'admin' ? 'admin.login' : 'login');
     }
 
     public function redirect(): RedirectResponse
@@ -77,6 +126,8 @@ class AuthController extends Controller
                 return '/bk/dashboard';
             case 'kepala_sekolah':
                 return '/kepala-sekolah/dashboard';
+            case 'admin':
+                return '/admin/dashboard';
             default:
                 return '/';
         }

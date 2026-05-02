@@ -17,6 +17,16 @@ class ReguSeeder extends Seeder
     public function run(): void
     {
         User::updateOrCreate(
+            ['email' => 'admin@regu.test'],
+            [
+                'name' => 'Admin REGU',
+                'nis' => null,
+                'password' => Hash::make('password'),
+                'role' => 'admin',
+            ]
+        );
+
+        User::updateOrCreate(
             ['email' => 'kepsek@regu.test'],
             [
                 'name' => 'Kepala Sekolah REGU',
