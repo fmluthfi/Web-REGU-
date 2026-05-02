@@ -1,5 +1,12 @@
 <?php
 
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BkDashboardController;
+use App\Http\Controllers\EvaluasiController;
+use App\Http\Controllers\GuruLaporanController;
+use App\Http\Controllers\KepalaSekolahDashboardController;
+use App\Http\Controllers\PeriodeEvaluasiController;
+use App\Http\Controllers\SiswaDashboardController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
