@@ -4,7 +4,13 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="theme-color" content="#0e7490">
     <title>{{ $title ?? 'REGU' }}</title>
+    <link rel="icon" href="{{ asset('favicon.ico') }}" sizes="any">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon-16x16.png') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}">
+    <link rel="manifest" href="{{ asset('site.webmanifest') }}">
     @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     @else
@@ -22,13 +28,14 @@
 </head>
 <body class="min-h-screen bg-slate-100 text-slate-900">
     <div class="min-h-screen">
-        <nav class="border-b border-slate-200 bg-white/95 backdrop-blur">
-            <div class="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
-                <div>
-                    <a href="{{ route('dashboard.redirect') }}" class="text-xl font-semibold tracking-tight text-slate-900">REGU</a>
-                    <p class="text-sm text-slate-500">Platform Rating Guru Berbasis Evaluasi Siswa</p>
-                </div>
-                @auth
+        @unless (request()->routeIs('login'))
+            <nav class="border-b border-slate-200 bg-white/95 backdrop-blur">
+                <div class="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
+                    <div>
+                        <a href="{{ route('dashboard.redirect') }}" class="text-xl font-semibold tracking-tight text-slate-900">REGU</a>
+                        <p class="text-sm text-slate-500">Platform Rating Guru Berbasis Evaluasi Siswa</p>
+                    </div>
+                    @auth
                     <div class="flex items-center gap-4">
                         <div class="text-right">
                             <p class="text-sm font-medium text-slate-900">{{ auth()->user()->name }}</p>
@@ -39,9 +46,10 @@
                             <button type="submit" class="rounded-full bg-slate-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-slate-700">Logout</button>
                         </form>
                     </div>
-                @endauth
-            </div>
-        </nav>
+                    @endauth
+                </div>
+            </nav>
+        @endunless
 
         @auth
             <header class="border-b border-slate-200 bg-slate-50">
@@ -58,14 +66,14 @@
             </header>
         @endauth
 
-        <main class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+        <main class="{{ request()->routeIs('login') ? '' : 'mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8' }}">
             @if (session('success'))
                 <div class="mb-6 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">{{ session('success') }}</div>
             @endif
             @if (session('error'))
                 <div class="mb-6 rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">{{ session('error') }}</div>
             @endif
-            @if ($errors->any())
+            @if (! request()->routeIs('login') && $errors->any())
                 <div class="mb-6 rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
                     <ul class="space-y-1">
                         @foreach ($errors->all() as $error)
