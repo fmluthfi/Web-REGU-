@@ -11,14 +11,10 @@
     <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon-16x16.png') }}">
     <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}">
     <link rel="manifest" href="{{ asset('site.webmanifest') }}">
-    @php
-        $hasViteAssets = file_exists(public_path('build/manifest.json')) || (app()->environment('local') && file_exists(public_path('hot')));
-    @endphp
-    @if (app()->environment('production') || ! $hasViteAssets)
-        <script src="https://cdn.tailwindcss.com"></script>
-    @endif
-    @if ($hasViteAssets)
+    @if (file_exists(public_path('build/manifest.json')) || (app()->environment('local') && file_exists(public_path('hot'))))
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @else
+        <script src="https://cdn.tailwindcss.com"></script>
     @endif
     <style>
         body {
